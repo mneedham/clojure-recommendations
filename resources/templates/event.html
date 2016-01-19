@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<div>
+  <h4><a href="/groups/{{event.group.data.id}}">{{event.group.data.name}}</a></h4>
+  <h2>{{event.event.data.name}}</h2> (on <a href="http://www.meetup.com/{{event.group.data.urlname}}/events/{{event.event.data.id}}">meetup.com</a>)
+  <hr />
+  <div class="row">
+    <div class="col-md-2"><p class="lead">Who's going?</p></div>
+    <div class="col-md-2"><p class="lead">{{event.numberOfRSVPs}}</p></div>
+
+    <div class="col-md-12">
+
+      <ul class="col-5">
+        {% for row in event.rsvps %}
+          <li>
+            <a href="/users/{{row.data.id}}">{{row.data.name}}</a>
+          </li>
+        {% endfor %}
+      </ul>
+
+   </div>
+
+
+
+  </div>
+
+
+
+
+
+</div>
+{% endblock %}

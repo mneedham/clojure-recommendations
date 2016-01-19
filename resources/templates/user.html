@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<div>
+  <h2>{{data.member.data.name}}</h2>
+  <hr />
+  <div class="row">
+    <div class="col-md-2"><strong>Groups</strong></div>
+    <div class="col-md-2">{{data.numberOfGroups}}</div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-10">
+
+      <ul class="col-3">
+      {% for group in data.groups %}
+       <li><a href="/groups/{{group.data.id}}">{{group.data.name}}</a></li>
+      {% endfor %}
+     </ul>
+
+    </div>
+  </div>
+<hr />
+  <div class="row">
+    <div class="col-md-2"><strong>Last event</strong></div>
+    <div class="col-md-10">
+      <a href="/events/{{data.event.data.id}}">{{data.event.data.name}}</a>
+    </div>
+  </div>
+
+
+</div>
+{% endblock %}
