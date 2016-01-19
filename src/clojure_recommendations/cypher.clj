@@ -3,8 +3,8 @@
             [clojurewerkz.neocons.rest.cypher :as cy]
             [clojure.walk :as walk]))
 
-(def conn (nr/connect "http://neo4j:neo4j@localhost:7474/db/data/"))
+(def conn (nr/connect "http://neo4j:medium@localhost:7474/db/data/"))
 
 (defn execute
-  ([query] (execute-cypher query {}))
+  ([query] (execute query {}))
   ([query params] (-> (cy/tquery conn query params) walk/keywordize-keys)))
