@@ -7,12 +7,12 @@
             [clojure-recommendations.cypher :as cypher]
             [clojure-recommendations.queries :as queries]))
 
-(def logged-in-user "Pieter Cailliau")
+(def logged-in-user "Mark Needham")
 
 (defn extract-date-time [timestamp]
   { :formatted-time (t/as-time timestamp)
     :formatted-date (t/as-date timestamp)
-    :how-long (t/how-long timestamp) })
+    :how-long (t/how-long timestamp)})
 
 (defn suggested-events-for-user [user query]
   (let [rows (cypher/execute query {:name user})]
