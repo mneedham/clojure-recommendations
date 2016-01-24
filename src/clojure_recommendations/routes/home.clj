@@ -3,31 +3,23 @@
             [compojure.core :refer [defroutes GET]]
             [ring.util.http-response :refer [ok]]
             [clojure.java.io :as io]
-            [clojurewerkz.neocons.rest :as nr]
-            [clojurewerkz.neocons.rest.cypher :as cy]
-            [clojure.walk :as walk]
             [clojure-recommendations.timestamp :as t]
             [clojure-recommendations.cypher :as cypher]
             [clojure-recommendations.queries :as queries]))
 
-(def logged-in-user "Mark Needham")
+(def logged-in-user "Pieter Cailliau")
 
 (defn extract-date-time [timestamp]
   { :formatted-time (t/as-time timestamp)
     :formatted-date (t/as-date timestamp)
     :how-long (t/how-long timestamp) })
 
-(defn suggested-events-1 [user]
-  (let [rows (cypher/execute queries/suggested-events-1 {:name logged-in-user})]
+(defn suggested-events-for-user [user query]
+  (let [rows (cypher/execute query {:name user})]
     (map #(merge % (extract-date-time (-> % :futureEventTime) )) rows)))
 
-(defn suggested-events-2 [user]
-  (let [rows (cypher/execute queries/suggested-events-2 {:name logged-in-user})]
-    (map #(merge % (extract-date-time (-> % :futureEventTime) )) rows)))
-
-(defn suggested-events-3 [user]
-  (let [rows (cypher/execute queries/suggested-events-3 {:name logged-in-user})]
-    (map #(merge % (extract-date-time (-> % :futureEventTime) )) rows)))
+(def suggested-events
+  (partial suggested-events-for-user logged-in-user))
 
 (defn person [name]
   (first (cypher/execute queries/logged-in-user {:name name})))
@@ -35,9 +27,9 @@
 (defn home-page []
   (layout/render
     "home.html" {:suggested-groups (cypher/execute queries/suggested-groups {:name logged-in-user})
-                 :suggested-events-1 (suggested-events-1 logged-in-user)
-                 :suggested-events-2 (suggested-events-2 logged-in-user)
-                 :suggested-events-3 (suggested-events-3 logged-in-user)
+                 :suggested-events-1 (suggested-events queries/suggested-events-1)
+                 :suggested-events-2 (suggested-events queries/suggested-events-2)
+                 :suggested-events-3 (suggested-events queries/suggested-events-3)
                  :person (person logged-in-user)}))
 
 (defn about-page []
@@ -61,9 +53,16 @@
 (defn user-page [user-id]
   (layout/render "user.html" {:data (user user-id)}))
 
+(defn topic [topic-id]
+  (first (cypher/execute queries/topic {:id topic-id})))
+
+(defn topic-page [topic-id]
+  (layout/render "topic.html" {:data (topic topic-id)}))
+
 (defroutes home-routes
   (GET "/" [] (home-page))
   (GET "/events/:event-id" [event-id] (event-page event-id))
   (GET "/groups/:group-id" [group-id] (group-page group-id))
   (GET "/users/:user-id" [user-id] (user-page user-id))
+  (GET "/topics/:topic-id" [topic-id] (topic-page topic-id))
   (GET "/about" [] (about-page)))

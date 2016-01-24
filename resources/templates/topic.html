@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<div>
+  <h2>{{data.topic.data.name}}</h2>
+  <hr />
+
+  <table class="table-condensed">
+     <tbody>
+       <tr>
+         <td><strong>Members</strong></td>
+         <td>{{data.numberOfMembers}}</td>
+       </tr>
+
+       <tr>
+         <td><strong>Groups</strong></td>
+         <td>
+           <ul class="col-3">
+           {% for row in data.groups %}
+            <li><a href="/groups/{{row.data.id}}">{{ row.data.name}}</a></li>
+            {% endfor %}
+          </ul>
+         </td>
+       </tr>
+     </tbody>
+   </table>
+
+
+
+{% endblock %}

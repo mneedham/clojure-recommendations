@@ -8,3 +8,15 @@
 (defn execute
   ([query] (execute query {}))
   ([query params] (-> (cy/tquery conn query params) walk/keywordize-keys)))
+
+
+
+(def query
+  "MATCH (group:Group)-[:HAS_TOPIC]->(:Topic {name: 'Clojure'})
+   RETURN group
+   LIMIT 5")
+
+;; Sample query
+(->> (cy/tquery conn query)
+    walk/keywordize-keys
+    (map #(-> % :group :data)))
