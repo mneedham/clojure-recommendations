@@ -27,6 +27,29 @@
       <a href="/events/{{data.event.data.id}}">{{data.event.data.name}}</a>
     </div>
   </div>
+<hr />
+    <div class="row">
+      <div class="col-md-2"><strong>Both members of</strong></div>
+      <div class="col-md-10">
+        <ul class="col-3">
+          {% for group in data.commonGroups %}
+           <li class="col-3"><a href="/groups/{{group.data.id}}">{{group.data.name}}</a></li>
+          {% endfor %}
+        </ul>
+    </div>
+  </div>
+<hr />
+    <div class="row">
+      <div class="col-md-2"><strong>Both went to</strong></div>
+      <div class="col-md-10">
+        <ul class="col-3">
+          {% for event in data.commonEvents %}
+           <li class="col-3"><a href="/events/{{event.data.id}}">{{event.data.name}}</a></li>
+          {% endfor %}
+        </ul>
+    </div>
+  </div>
+
 
 
 </div>

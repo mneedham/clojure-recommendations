@@ -2,123 +2,35 @@
 {% block content %}
 <div>
 
-  <h4>Logged in as <a href="/users/{{person.member.data.id}}">{{person.member.data.name}}</a></h4>
+Logged in as <a href="/users/{{person.member.data.id}}">{{person.member.data.name}}</a>
 
-  <h2>Recommendations</h2>
+  <h4>Suggested Groups</h4>
 
-  <!-- Nav tabs -->
-  <ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active"><a href="#groups" aria-controls="groups" role="tab" data-toggle="tab">Groups</a></li>
-    <li role="presentation"><a href="#events1" aria-controls="events1" role="tab" data-toggle="tab">Events #1</a></li>
-    <li role="presentation"><a href="#events2" aria-controls="events2" role="tab" data-toggle="tab">Events #2</a></li>
-    <li role="presentation"><a href="#events3" aria-controls="events3" role="tab" data-toggle="tab">Events #3</a></li>
+  <ul class="col-3">
+    {% for row in suggested-groups %}
+    <li class="col-3" style="height:100px;padding: 3px 0px 3px 0px;">
+      <div>
+        <p>
+          <strong><a href="/groups/{{row.otherGroup.data.id}}">{{row.otherGroup.data.name }}</a></strong>
+        </p>
+        <p>
+         {{row.topics}} topic{{row.topics|pluralize}} / {{row.numberOfMembers}} members / {{row.recentEvents}} recent event{{row.recentEvents|pluralize}}
+        </p>
+        <p>
+          {{row.score}}
+        </p>
+
+      </div>
+
+    </li>
+  {% endfor %}
   </ul>
 
-  <!-- Tab panes -->
-  <div class="tab-content">
-    <div role="tabpanel" class="tab-pane active" id="groups">
-      <table class="table">
-         <thead>
-           <th>Group</th>
-           <th>Topics</th>
-         </thead>
-         <tbody>
-             {% for row in suggested-groups %}
-               <tr>
-                 <td><a href="/groups/{{row.otherGroup.data.id}}">{{row.otherGroup.data.name }}</a></td>
-                 <td>
-                   <ul class="topics">
-                   {% for topic in row.topicsInCommon %}
-                    <li class="topics"><a href="/topics/{{topic.data.id}}">{{topic.data.name}}</a></li>
-                   {% endfor %}
-                  </ul>
-                 </td>
-               </tr>
-             {% endfor %}
-         </tbody>
-       </table>
+  <hr />
 
-    </div>
-    <div role="tabpanel" class="tab-pane" id="events1">
-      <table class="table">
-         <thead>
-           <th width"25%">Event</th>
-           <th width="25%">Group</th>
-           <th width="10%">Member?</th>
-           <th width="10%">Previous</th>
-           <th width="20%">Date</th>
-         </thead>
-         <tbody>
-             {% for row in suggested-events-1 %}
-               <tr>
-                 <td>
-                   <a href="/events/{{row.futureEvent.data.id}}">{{row.futureEvent.data.name}}</a>
-                 </td>
-                 <td><a href="/groups/{{row.group.data.id}}">{{row.group.data.name }}</a></td>
+  <h4>Suggested Events</h4>
 
-                 <td>
-                    {% if row.isMember %}
-                      <img src="img/true.png" width="30px">
-                    {% else %}
-                      <img src="img/false.png"  width="30px">
-                    {% endif %}
-                 </td>
-                 <td>
-                   {{row.previousEvents}}
-                 </td>
-                 <td>
-                   <p>{{row.formatted-date}}, {{row.formatted-time}} </p>
-                   <p>({{row.how-long}} days)</P>
-                 </td>
-               </tr>
-             {% endfor %}
-         </tbody>
-       </table>
-
-    </div>
-    <div role="tabpanel" class="tab-pane" id="events2">
-      <table class="table">
-         <thead>
-           <th width"20%">Event</th>
-           <th width="20%">Group</th>
-           <th width="10%">Member?</th>
-           <th width="7%">Events</th>
-           <th width="8%">Topics</th>
-           <th width="20%">Date</th>
-         </thead>
-         <tbody>
-             {% for row in suggested-events-2 %}
-               <tr>
-                 <td>
-                   <a href="/events/{{row.futureEvent.data.id}}">{{row.futureEvent.data.name}}</a>
-                 </td>
-                 <td><a href="/groups/{{row.group.data.id}}">{{row.group.data.name }}</a></td>
-
-                 <td>
-                    {% if row.isMember %}
-                      <img src="img/true.png" width="30px">
-                    {% else %}
-                      <img src="img/false.png"  width="30px">
-                    {% endif %}
-                 </td>
-                 <td>
-                   {{row.previousEvents}}
-                 </td>
-                 <td>
-                   {{row.topics}}
-                 </td>
-                 <td>
-                   <p>{{row.formatted-date}}, {{row.formatted-time}} </p>
-                   <p>({{row.how-long}} days)</P>
-                 </td>
-               </tr>
-             {% endfor %}
-         </tbody>
-       </table>
-
-    </div>
-    <div role="tabpanel" class="tab-pane" id="events3">
-      <table class="table">
+ <table class="table">
          <thead>
            <th width"20%">Event</th>
            <th width="7%">Events</th>
@@ -161,8 +73,6 @@
          </tbody>
        </table>
 
-    </div>
-  </div>
 
 </div>
 {% endblock %}

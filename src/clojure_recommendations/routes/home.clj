@@ -5,7 +5,8 @@
             [clojure.java.io :as io]
             [clojure-recommendations.timestamp :as t]
             [clojure-recommendations.cypher :as cypher]
-            [clojure-recommendations.queries :as queries]))
+            [clojure-recommendations.queries :as queries]
+            [clojure-recommendations.scoring :as scoring]))
 
 (def logged-in-user "Mark Needham")
 
@@ -24,11 +25,16 @@
 (defn person [name]
   (first (cypher/execute queries/logged-in-user {:name name})))
 
+(defn suggested-groups [name]
+  (let [result (cypher/execute queries/suggested-groups {:name name})]
+    (take 10
+          (->> result
+               (map #(merge % {:score (scoring/score-row %)}))
+               (sort-by :score >)))))
+
 (defn home-page []
   (layout/render
-    "home.html" {:suggested-groups (cypher/execute queries/suggested-groups {:name logged-in-user})
-                 :suggested-events-1 (suggested-events queries/suggested-events-1)
-                 :suggested-events-2 (suggested-events queries/suggested-events-2)
+    "home.html" {:suggested-groups (suggested-groups logged-in-user)
                  :suggested-events-3 (suggested-events queries/suggested-events-3)
                  :person (person logged-in-user)}))
 
@@ -42,13 +48,13 @@
   (layout/render "event.html" {:event (event event-id) }))
 
 (defn group [group-id]
-  (first (cypher/execute queries/group {:id group-id})))
+  (first (cypher/execute queries/group {:id group-id :me logged-in-user})))
 
 (defn group-page [group-id]
   (layout/render "group.html" {:group (group group-id)}))
 
 (defn user [user-id]
-  (first (cypher/execute queries/user {:id user-id})))
+  (first (cypher/execute queries/user {:id user-id :me logged-in-user})))
 
 (defn user-page [user-id]
   (layout/render "user.html" {:data (user user-id)}))

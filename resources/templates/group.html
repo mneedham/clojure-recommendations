@@ -7,6 +7,25 @@
     <div class="col-md-2"><strong>People</strong></div>
     <div class="col-md-2">{{group.numberOfMembers}}</div>
   </div>
+    <hr />
+  <div class="row">
+    <div class="col-md-2"><strong>Friends</strong></div>
+    <div class="col-md-2">                {{group.friends|count}}</div>
+  </div>
+
+    <div class="row">
+      <div class="col-md-2"></div>
+      <div class="col-md-10">
+        <ul class="col-3">
+
+                {% for row in group.friends %}
+                  <li class="col-3">
+                    <a href="/users/{{row.data.id}}">{{row.data.name}}</a>
+                  </li>
+                {% endfor %}
+        </ul>
+      </div>
+  </div>
 <hr />
   <div class="row">
     <div class="col-md-2"><strong>Previous Events</strong></div>
