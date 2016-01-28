@@ -35,7 +35,7 @@
 (defn home-page []
   (layout/render
     "home.html" {:suggested-groups (suggested-groups logged-in-user)
-                 :suggested-events-3 (suggested-events queries/suggested-events-3)
+                 :suggested-events-3 (suggested-events queries/suggested-events)
                  :person (person logged-in-user)}))
 
 (defn about-page []

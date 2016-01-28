@@ -8,47 +8,7 @@
    OPTIONAL MATCH (otherGroup)-[:HOSTED_EVENT]->(event) WHERE (timestamp() - 90*24*60*60*1000 ) < event.time < timestamp()
    RETURN otherGroup, topics , numberOfMembers, COUNT(event) AS recentEvents")
 
-
-(def suggested-events-1
-   "WITH 24.0*60*60*1000 AS oneDay
-    MATCH (member:Member {name: {name}})
-    MATCH (futureEvent:Event) WHERE futureEvent.time >= timestamp()
-    MATCH (futureEvent)<-[:HOSTED_EVENT]-(group)
-
-    WITH oneDay, group, futureEvent, member, EXISTS((group)<-[:MEMBER_OF]-(member)) AS isMember
-    OPTIONAL MATCH (member)-[rsvp:RSVPD {response: 'yes'}]->(pastEvent)<-[:HOSTED_EVENT]-(group)
-    WHERE pastEvent.time < timestamp()
-
-    RETURN group,
-           futureEvent,
-           isMember,
-           COUNT(rsvp) AS previousEvents,
-           round((futureEvent.time - timestamp()) / oneDay) AS days,
-           futureEvent.time + futureEvent.utcOffset AS futureEventTime
-    ORDER BY days, previousEvents DESC
-    LIMIT 10")
-
-(def suggested-events-2
-  "WITH 24.0*60*60*1000 AS oneDay
-   MATCH (member:Member {name: {name}})
-   MATCH (futureEvent:Event) WHERE futureEvent.time >= timestamp()
-   MATCH (futureEvent)<-[:HOSTED_EVENT]-(group)
-
-   WITH oneDay, group, futureEvent, member, EXISTS((group)<-[:MEMBER_OF]-(member)) AS isMember
-   OPTIONAL MATCH (member)-[rsvp:RSVPD {response: 'yes'}]->(pastEvent)<-[:HOSTED_EVENT]-(group)
-   WHERE pastEvent.time < timestamp()
-
-   WITH oneDay, group, futureEvent, member, isMember, COUNT(rsvp) AS previousEvents
-   OPTIONAL MATCH (futureEvent)<-[:HOSTED_EVENT]-()-[:HAS_TOPIC]->(topic)<-[:INTERESTED_IN]-(member)
-
-   RETURN group, futureEvent, isMember, previousEvents,
-          COUNT(topic) AS topics, round((futureEvent.time - timestamp()) / oneDay) AS days,
-          futureEvent.time + futureEvent.utcOffset AS futureEventTime
-   ORDER BY days,previousEvents DESC, topics DESC
-   LIMIT 10")
-
-
-(def suggested-events-3
+(def suggested-events
   "WITH 24.0*60*60*1000 AS oneDay
    MATCH (member:Member {name: {name}})
    MATCH (futureEvent:Event) WHERE futureEvent.time >= timestamp()

@@ -27,6 +27,8 @@
       <a href="/events/{{data.event.data.id}}">{{data.event.data.name}}</a>
     </div>
   </div>
+
+{% if data.commonGroups|not-empty %}
 <hr />
     <div class="row">
       <div class="col-md-2"><strong>Both members of</strong></div>
@@ -38,6 +40,9 @@
         </ul>
     </div>
   </div>
+{% endif %}
+
+{% if data.commonEvents|not-empty %}
 <hr />
     <div class="row">
       <div class="col-md-2"><strong>Both went to</strong></div>
@@ -49,6 +54,7 @@
         </ul>
     </div>
   </div>
+{% endif %}
 
 
 
