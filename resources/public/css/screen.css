@@ -90,6 +90,16 @@ ul.col-5 {
  padding: 0;
 }
 
+ul.col-2 {
+	columns: 2;
+ -webkit-columns: 2;
+ -moz-columns: 2;
+ list-style-type: none;
+ margin: 0;
+ padding: 1px 0 1px 0;
+}
+
+
 li.col-3, li.col-5  {
     -webkit-column-break-inside: avoid;
 }

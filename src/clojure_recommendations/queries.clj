@@ -32,8 +32,12 @@
 
 (def event
    "MATCH (event:Event {id: {id}})<-[:HOSTED_EVENT]-(group)
+    MATCH (me:Member {name: {me}})
     OPTIONAL MATCH (person)-[rsvp:RSVPD {response: 'yes'}]->(event)
-    RETURN event, group, COUNT(rsvp) AS numberOfRSVPs, COLLECT(person) AS rsvps")
+    WITH event, me, person, group, rsvp
+    ORDER BY person.name
+    RETURN event, group, COUNT(rsvp) AS numberOfRSVPs,
+           COLLECT({person: person, friends: EXISTS((person)-[:FRIENDS]-(me))}) AS rsvps")
 
 (def group
   "MATCH (group:Group {id: {id}})<-[:MEMBER_OF]-()
@@ -53,6 +57,7 @@
   WHERE event.time < timestamp()
 
   WITH member, SIZE((member)-[:MEMBER_OF]->()) AS numberOfGroups, event
+  ORDER BY event.time DESC
   LIMIT 1
   MATCH (member)-[:MEMBER_OF]->(group)
 

@@ -29,7 +29,7 @@
   (let [result (cypher/execute queries/suggested-groups {:name name})]
     (take 10
           (->> result
-               (map #(merge % {:score (scoring/score-row %)}))
+               (map #(assoc % :score (scoring/score-row %)))
                (sort-by :score >)))))
 
 (defn home-page []
@@ -42,19 +42,26 @@
   (layout/render "about.html"))
 
 (defn event [event-id]
-  (first (cypher/execute queries/event {:id event-id})))
+  (let [result (first (cypher/execute queries/event {:id event-id :me logged-in-user}))]
+    (merge result (extract-date-time (-> result :event :data :time)))))
 
 (defn event-page [event-id]
   (layout/render "event.html" {:event (event event-id) }))
 
 (defn group [group-id]
-  (first (cypher/execute queries/group {:id group-id :me logged-in-user})))
+  (let [result (first (cypher/execute queries/group {:id group-id :me logged-in-user}))
+        events-with-time (map #(merge % (extract-date-time (-> % :data :time))) (result :events))]
+;;     (println "EVENTS:" (map #(merge % (extract-date-time (-> % :data :time))) (result :events)))
+    (println "EVENTS: " events-with-time)
+    (assoc-in result [:events] events-with-time)))
 
 (defn group-page [group-id]
+  (println "------" (group group-id))
   (layout/render "group.html" {:group (group group-id)}))
 
 (defn user [user-id]
-  (first (cypher/execute queries/user {:id user-id :me logged-in-user})))
+  (let [result (first (cypher/execute queries/user {:id user-id :me logged-in-user}))]
+    (merge result (extract-date-time (-> result :event :data :time)))))
 
 (defn user-page [user-id]
   (layout/render "user.html" {:data (user user-id)}))

@@ -9,7 +9,9 @@
 
 (defn how-long [timestamp]
   (let [time (c/from-long timestamp)]
-    (t/in-days (t/interval (t/now) time))))
+    (if (t/after? time (t/now))
+      (t/in-days (t/interval (t/now) time))
+      (t/in-days (t/interval  time (t/now))))))
 
 (defn day-suffix [day]
   (let [stripped-day (if (< day 20) day (mod day 10))]

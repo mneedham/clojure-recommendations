@@ -37,10 +37,10 @@
   <div class="row">
     <div class="col-md-2"></div>
     <div class="col-md-10">
-      <ul class="col-3">
+      <ul class="col-2">
         {% for row in group.events %}
-          <li class="col-3">
-            <a href="/events/{{row.data.id}}">{{row.data.name}}</a>
+          <li class="col-2">
+            <a href="/events/{{row.data.id}}">{{row.data.name}}</a> - {{row.formatted-date}}, {{data.formatted-time}}
           </li>
         {% endfor %}
       </ul>
